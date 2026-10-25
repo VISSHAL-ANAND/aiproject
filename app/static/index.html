@@ -1,11 +1,65 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AI Road Risk | Safety Intelligence</title><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><link rel="stylesheet" href="/static/styles.css"></head>
-<body><header><div><p class="eyebrow">ROAD SAFETY INTELLIGENCE</p><h1>AI Road Risk</h1><p class="subtitle">Understand conditions around the road you're on.</p></div><button id="locate">◎ Use my location</button></header>
-<main><section class="map-wrap"><div id="map" aria-label="Interactive map"></div><p class="map-help">Click anywhere on the map to assess that location.</p></section>
-<section class="panel"><div class="panel-head"><div><p class="eyebrow">LOCATION ASSESSMENT</p><h2 id="place">Choose a road location</h2><p id="coords">No location selected</p></div><button id="assess">Assess risk</button></div>
-<div class="score-row"><div class="score" id="score">—<small>/100</small></div><div><span id="level" class="badge">WAITING</span><p id="weather">Weather not loaded</p><p class="muted">Baseline risk index — not a probability.</p></div></div>
-<h3>Contributing factors</h3><ul id="factors"><li>Select a point to begin.</li></ul><h3>Safety guidance</h3><ul id="recommendations"><li>Always follow posted signs and road rules.</li></ul>
-<p class="disclaimer">Prototype only. It may not include all hazards or current traffic data. Do not use as a guarantee of safety.</p></section></main>
-<footer>Weather: Open-Meteo · Map and road data: © OpenStreetMap contributors</footer>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="/static/app.js"></script></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Road safety assessment using selected location, current weather and declared road conditions.">
+  <title>RoadSense | Road Risk Assessment</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="RoadSense home">
+      <span class="brand-mark" aria-hidden="true">R</span>
+      <span><strong>RoadSense</strong><small>ROAD SAFETY INTELLIGENCE</small></span>
+    </a>
+    <div class="topbar-right"><span class="live-dot"></span><span>Location-based assessment</span><button id="locate" class="button button-primary">◎ Use my location</button></div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <div><p class="eyebrow">SAFER JOURNEYS START WITH AWARENESS</p><h1>Understand the road<br class="desktop-break"> before you travel.</h1><p class="intro-copy">Assess conditions around a location using weather information and road factors. Select a point on the map or use your current location.</p></div>
+      <div class="intro-note"><span class="note-icon">i</span><span>This is a decision-support prototype, not an emergency service or a guarantee of road safety.</span></div>
+    </section>
+
+    <div class="workspace">
+      <section class="card map-card" aria-label="Location map">
+        <div class="card-heading"><div><p class="eyebrow">01 / LOCATION</p><h2>Choose an area</h2></div><span class="map-status"><span class="live-dot"></span> Interactive map</span></div>
+        <div id="map" role="application" aria-label="Interactive map. Click to select a location."></div>
+        <div class="map-foot"><span class="map-pin">⌖</span><span id="map-help">Click the map to choose a road location.</span><button id="reset" class="button button-quiet" type="button">Clear selection</button></div>
+      </section>
+
+      <section class="card assessment-card">
+        <div class="card-heading"><div><p class="eyebrow">02 / CONDITIONS</p><h2>Assessment details</h2></div><span class="step-pill">Inputs</span></div>
+        <div class="selected-location"><span class="location-icon">⌖</span><div><strong id="place">No location selected</strong><span id="coords">Choose a point on the map or use GPS</span></div></div>
+        <div class="form-grid">
+          <label>Traffic level <select id="traffic"><option value="">Not specified</option><option value="low">Low</option><option value="moderate">Moderate</option><option value="heavy">Heavy</option></select></label>
+          <label>Road condition <select id="road"><option value="">Not specified</option><option value="good_surface">Good surface</option><option value="poor_surface">Poor surface</option><option value="unlit">Poorly lit / unlit</option><option value="sharp_curve">Sharp curve</option></select></label>
+          <label>Visibility <select id="visibility"><option value="">Not specified</option><option value="500">Very low (&lt; 500 m)</option><option value="1000">Low (about 1 km)</option><option value="3000">Moderate (about 3 km)</option><option value="10000">Good (10 km+)</option></select></label>
+          <label class="check-field"><input type="checkbox" id="night"> <span>Assess as night-time</span></label>
+        </div>
+        <button id="assess" class="button button-primary button-wide" type="button">Assess selected location <span aria-hidden="true">→</span></button>
+        <p id="status" class="status" role="status" aria-live="polite">Select a location to start an assessment.</p>
+      </section>
+
+      <section class="card results-card">
+        <div class="card-heading"><div><p class="eyebrow">03 / RESULT</p><h2>Risk overview</h2></div><span id="result-state" class="step-pill">Awaiting assessment</span></div>
+        <div class="result-main">
+          <div class="score-ring" id="score-ring"><div class="score-value"><strong id="score">—</strong><span>out of 100</span></div></div>
+          <div class="result-summary"><span id="level" class="badge badge-neutral">NOT ASSESSED</span><h3 id="result-title">Your assessment will appear here</h3><p id="weather">Weather data has not been loaded.</p><p id="score-note" class="muted">The score is a relative baseline index, not an accident probability.</p></div>
+        </div>
+        <div class="result-columns">
+          <div><h3 class="section-title">Contributing factors</h3><ul id="factors" class="result-list"><li class="empty-item">Complete an assessment to see the factors considered.</li></ul></div>
+          <div><h3 class="section-title">Safety guidance</h3><ul id="recommendations" class="result-list"><li class="empty-item">General guidance will appear after assessment.</li></ul></div>
+        </div>
+        <div class="data-note"><strong>Data transparency</strong><p>Weather is requested from Open-Meteo. Location labels use OpenStreetMap Nominatim. Traffic, visibility and road characteristics are user-provided inputs unless a connected data source is explicitly shown. Historical crash data is not currently connected.</p></div>
+      </section>
+    </div>
+  </main>
+  <footer><span>RoadSense · Academic project prototype</span><span>Map © OpenStreetMap contributors · Weather by Open-Meteo</span></footer>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>
