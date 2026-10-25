@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Road Risk | Safety Intelligence</title><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><link rel="stylesheet" href="/static/styles.css"></head>
+<body><header><div><p class="eyebrow">ROAD SAFETY INTELLIGENCE</p><h1>AI Road Risk</h1><p class="subtitle">Understand conditions around the road you're on.</p></div><button id="locate">◎ Use my location</button></header>
+<main><section class="map-wrap"><div id="map" aria-label="Interactive map"></div><p class="map-help">Click anywhere on the map to assess that location.</p></section>
+<section class="panel"><div class="panel-head"><div><p class="eyebrow">LOCATION ASSESSMENT</p><h2 id="place">Choose a road location</h2><p id="coords">No location selected</p></div><button id="assess">Assess risk</button></div>
+<div class="score-row"><div class="score" id="score">—<small>/100</small></div><div><span id="level" class="badge">WAITING</span><p id="weather">Weather not loaded</p><p class="muted">Baseline risk index — not a probability.</p></div></div>
+<h3>Contributing factors</h3><ul id="factors"><li>Select a point to begin.</li></ul><h3>Safety guidance</h3><ul id="recommendations"><li>Always follow posted signs and road rules.</li></ul>
+<p class="disclaimer">Prototype only. It may not include all hazards or current traffic data. Do not use as a guarantee of safety.</p></section></main>
+<footer>Weather: Open-Meteo · Map and road data: © OpenStreetMap contributors</footer>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="/static/app.js"></script></body></html>
